@@ -12,6 +12,10 @@ const config = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "music-generator-saas-app.s3.us-east-2.amazonaws.com",
+      },
     ],
   },
 };
