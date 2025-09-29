@@ -10,7 +10,7 @@ interface PricingCardProps {
   price: number;
   features: string[];
   ctaLabel: string;
-  ctaColor: string;
+  ctaColor?: string;
 }
 
 function PricingCard({

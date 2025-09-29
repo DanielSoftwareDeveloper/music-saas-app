@@ -17,7 +17,7 @@ function Pricing() {
               price={item.price}
               features={item.features}
               ctaLabel={item.ctaLabel}
-              ctaColor={item.ctaColor}
+              ctaColor={item.ctaColor ?? "bg-emerald-400"}
             />
           ))}
         </div>
