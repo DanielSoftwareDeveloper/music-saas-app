@@ -37,6 +37,5 @@ export const pricingList = [
       "Best for artists and bigger projects",
     ],
     ctaLabel: "Choose Premium",
-    ctaColor: "bg-yellow-500",
   },
 ];

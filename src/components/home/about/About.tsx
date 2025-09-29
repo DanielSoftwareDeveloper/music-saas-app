@@ -7,12 +7,18 @@ function About() {
         <div className="text-center">
           <h3 className="mb-4 text-2xl font-medium">Why Choose Us?</h3>
           <p className="">
-            AI-powered platform that turns your ideas into original songs in
-            seconds. Whether you’re a content creator, streamer, student, or
-            just someone who loves experimenting with sound, our mission is to
-            give you the tools to create without limits. No studios, no
-            expensive gear, no music background required, just your imagination
-            and our AI.
+            <span className="text-emerald-300">AI-powered platform</span> that
+            turns your ideas into original songs in seconds. Whether you&apos;re
+            a content creator, streamer, student,
+            <span className="text-purple-300">
+              or just someone who loves experimenting with sound
+            </span>
+            , our mission is to give you the tools to create without limits. No
+            studios, no expensive gear,{" "}
+            <span className="text-orange-300">
+              no music background required
+            </span>
+            , just your imagination and our AI.
           </p>
         </div>
       </MainWrapper>

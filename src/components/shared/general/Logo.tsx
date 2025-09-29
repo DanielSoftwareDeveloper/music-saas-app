@@ -9,9 +9,12 @@ function Logo({ className }: Props) {
   return (
     <Link
       href="/#banner"
-      className={cn("block text-2xl font-bold uppercase", className)}
+      className={cn(
+        "text-primary block text-xl font-bold uppercase lg:text-2xl",
+        className,
+      )}
     >
-      <span className="text-primary">Retokie</span>
+      Retokie
     </Link>
   );
 }

@@ -15,7 +15,7 @@ function Footer() {
           </div>
           <div className="">
             <h4 className="font-semibold">Plataforma</h4>
-            <Separator className="my-4" />
+            <Separator className="my-4 bg-neutral-700" />
             <ul className="space-y-1">
               <li>
                 <Link href="/#demo" className="footer-widget-item">
@@ -41,7 +41,7 @@ function Footer() {
           </div>
           <div className="">
             <h4 className="font-semibold">Legal</h4>
-            <Separator className="my-4" />
+            <Separator className="my-4 bg-neutral-700" />
             <ul className="space-y-1">
               <li>
                 <Link href="#" className="footer-widget-item">

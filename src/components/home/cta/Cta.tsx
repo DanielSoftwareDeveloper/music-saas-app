@@ -15,7 +15,7 @@ function Cta() {
         </p>
         <Link
           href="/auth/sign-up"
-          className={buttonVariants({ variant: "outline" })}
+          className={buttonVariants({ variant: "default" })}
         >
           Get Started for Free
         </Link>

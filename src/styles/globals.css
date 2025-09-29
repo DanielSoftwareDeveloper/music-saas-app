@@ -374,6 +374,6 @@ body {
     @apply space-y-2;
   }
   .footer-widget-item {
-    @apply text-sm;
+    @apply text-sm hover:text-emerald-300;
   }
 }
