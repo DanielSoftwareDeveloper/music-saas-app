@@ -56,18 +56,6 @@ export function UserDropdown({ name, email, image }: Props) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/">
-              <Home size={16} className="opacity-60" aria-hidden="true" />
-              <span>Home</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/admin/courses">
-              <BookOpen size={16} className="opacity-60" aria-hidden="true" />
-              <span>Courses</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
             <Link href="/overview">
               <LayoutDashboard
                 size={16}
@@ -75,6 +63,12 @@ export function UserDropdown({ name, email, image }: Props) {
                 aria-hidden="true"
               />
               <span>Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/admin/courses">
+              <BookOpen size={16} className="opacity-60" aria-hidden="true" />
+              <span>Settings</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>

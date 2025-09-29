@@ -4,7 +4,6 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import { ThemeProvider } from "~/components/theme/theme-provider";
-import CookieBanner from "~/components/shared/general/CookieBanner";
 import { siteConfig } from "~/config/site";
 
 export const metadata: Metadata = {
@@ -26,12 +25,11 @@ export default function RootLayout({
       <body className={`${geist.variable}`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
           {children}
-          <CookieBanner />
           <Toaster />
         </ThemeProvider>
       </body>

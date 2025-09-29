@@ -260,10 +260,10 @@ export function SongPanel() {
         <Button
           onClick={handleCreate}
           disabled={loading}
-          className="w-full cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 font-medium text-white hover:from-orange-600 hover:to-pink-600"
+          className="w-full cursor-pointer bg-emerald-400 font-semibold hover:bg-emerald-500"
         >
           {loading ? <Loader2 className="animate-spin" /> : <Music />}
-          {loading ? "Creating..." : "Create"}
+          {loading ? "Creating..." : "Create song"}
         </Button>
       </div>
     </div>

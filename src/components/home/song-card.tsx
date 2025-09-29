@@ -54,7 +54,7 @@ export function SongCard({ song }: { song: SongWithRelation }) {
   return (
     <div>
       <div onClick={handlePlay} className="cursor-pointer">
-        <div className="group relative aspect-square w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
+        <div className="group relative aspect-square w-full overflow-hidden rounded-md group-hover:opacity-75">
           {song.thumbnailUrl ? (
             <Image
               src={song.thumbnailUrl}
@@ -83,13 +83,15 @@ export function SongCard({ song }: { song: SongWithRelation }) {
           </div>
         </div>
 
-        <h3 className="mt-2 truncate text-sm font-medium text-gray-900">
+        <h3 className="mt-2 truncate text-sm font-medium text-gray-900 dark:text-gray-200">
           {song.title}
         </h3>
 
-        <p className="text-xs text-gray-500">{song.user.name}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          {song.user.name}
+        </p>
 
-        <div className="mt-1 flex items-center justify-between text-xs text-gray-900">
+        <div className="mt-1 flex items-center justify-between text-xs text-gray-900 dark:text-gray-200">
           <span>{song.listenCount} listens</span>
           <button
             onClick={handleLike}

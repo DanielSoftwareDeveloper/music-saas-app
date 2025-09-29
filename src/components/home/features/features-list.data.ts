@@ -10,28 +10,28 @@ export const featuresList = [
     title: "Create amazing beats",
     color: "text-blue-200",
     description:
-      "Access a wide range of carefully curated courses designed by industry experts",
+      "Generate unique instrumentals in seconds, from hip-hop to EDM and explore endless creative possibilities.",
     icon: AudioLines,
   },
   {
     title: "Create songs with voice",
     color: "text-emerald-200",
     description:
-      "Engage with interactive content, quizzes and assignments to enhance your learning experience.",
+      "Add AI-generated vocals to your tracks and bring your songs to life with realistic voices.",
     icon: AudioWaveform,
   },
   {
     title: "Add your own lyrics",
     color: "text-purple-200",
     description:
-      "Monitor your progress and achievements with detailed analytics and personalized dashboards.",
+      "Personalize your music by adding your own lyrics and make every track truly yours.",
     icon: LetterText,
   },
   {
     title: "Download songs",
     color: "text-rose-200",
     description:
-      "Join a vibrant community of learners and instructors to collaborate and share knowledge.",
+      "Export your songs in WAV format and use them for videos, streams, personal projects or just for inspiration",
     icon: CloudDownload,
   },
 ];

@@ -7,17 +7,12 @@ function About() {
         <div className="text-center">
           <h3 className="mb-4 text-2xl font-medium">Why Choose Us?</h3>
           <p className="">
-            Our app combines{" "}
-            <span className="text-purple-200">
-              Advanced Artificial Intelligence{" "}
-            </span>
-            with {""}
-            <span className="text-teal-200">hyper-realistic voices</span> to
-            deliver unparalleled language immersion. You won’t just learn
-            grammar or vocabulary—you’ll engage with dialogues that replicate{" "}
-            <span className="text-rose-200">real-life conversations</span>,
-            tailored to your level and goals, thanks to an algorithm that
-            evolves with you.
+            AI-powered platform that turns your ideas into original songs in
+            seconds. Whether you’re a content creator, streamer, student, or
+            just someone who loves experimenting with sound, our mission is to
+            give you the tools to create without limits. No studios, no
+            expensive gear, no music background required, just your imagination
+            and our AI.
           </p>
         </div>
       </MainWrapper>

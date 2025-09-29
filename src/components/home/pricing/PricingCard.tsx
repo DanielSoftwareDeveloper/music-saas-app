@@ -1,6 +1,8 @@
 import { Separator } from "~/components/ui/separator";
 import { cn } from "~/lib/utils";
 import { Check, type LucideIcon } from "lucide-react";
+import Link from "next/link";
+import { buttonVariants } from "~/components/ui/button";
 
 interface PricingCardProps {
   plan: string;
@@ -44,14 +46,16 @@ function PricingCard({
           ))}
         </ul>
       </div>
-      <button
+      <Link
+        href="/auth/sign-up"
         className={cn(
-          "rounded px-4 py-2 font-semibold text-black hover:cursor-pointer",
+          buttonVariants({ variant: "default", size: "lg" }),
+          "font-medium",
           ctaColor,
         )}
       >
         {ctaLabel}
-      </button>
+      </Link>
     </div>
   );
 }

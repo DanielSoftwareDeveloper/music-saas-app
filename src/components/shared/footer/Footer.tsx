@@ -11,18 +11,20 @@ function Footer() {
         <div className="mb-16 grid grid-cols-2 gap-10 lg:grid-cols-3">
           <div className="col-span-4 md:col-span-1">
             <Logo className="mb-4" />
-            <p className="text-sm">
-              Learn languages effectively and realistically with our innovative
-              platform.
-            </p>
+            <p className="text-sm">AI-powered music creation for everyone.</p>
           </div>
           <div className="">
             <h4 className="font-semibold">Plataforma</h4>
             <Separator className="my-4" />
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               <li>
                 <Link href="/#demo" className="footer-widget-item">
                   Demo
+                </Link>
+              </li>
+              <li>
+                <Link href="/#about" className="footer-widget-item">
+                  About
                 </Link>
               </li>
               <li>
@@ -35,17 +37,12 @@ function Footer() {
                   Price
                 </Link>
               </li>
-              <li>
-                <Link href="/#price" className="footer-widget-item">
-                  FAQ
-                </Link>
-              </li>
             </ul>
           </div>
           <div className="">
             <h4 className="font-semibold">Legal</h4>
             <Separator className="my-4" />
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               <li>
                 <Link href="#" className="footer-widget-item">
                   Termns and conditions

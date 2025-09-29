@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/breadcrumb";
 import BreadcrumbPageClient from "~/components/sidebar/breadcrumb-page-client";
 import SoundBar from "~/components/sound-bar";
+import { ModeToggle } from "~/components/theme/ModeToggle";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -31,7 +32,7 @@ export default function RootLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="flex h-screen flex-col">
-          <header className="bg-background sticky-top z-10 border-b px-4 py-2">
+          <header className="bg-background sticky-top z-10 flex items-center justify-between border-b px-4 py-2">
             <div className="flex shrink-0 grow items-center gap-2">
               <SidebarTrigger className="-ml-1" />
               <Separator
@@ -46,6 +47,7 @@ export default function RootLayout({
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
+            {/*<ModeToggle />*/}
           </header>
           <main className="flex-1 overflow-y-auto">{children}</main>
           <SoundBar />
