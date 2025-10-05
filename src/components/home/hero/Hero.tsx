@@ -5,7 +5,7 @@ import MainWrapper from "~/components/shared/general/MainWrapper";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
 import { buttonVariants } from "~/components/ui/button";
-import Blobs from "./Blobs";
+import Blobs from "~/components/shared/general/Blobs";
 import { Badge } from "~/components/ui/badge";
 import { Sparkles } from "lucide-react";
 

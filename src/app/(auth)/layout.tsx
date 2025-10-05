@@ -6,6 +6,7 @@ import { Providers } from "~/components/providers";
 import { Toaster } from "~/components/ui/sonner";
 import Link from "next/link";
 import { buttonVariants } from "~/components/ui/button";
+import Blobs from "~/components/shared/general/Blobs";
 
 export const metadata: Metadata = {
   title: "Music Generator",
@@ -22,7 +23,9 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className={`${geist.variable} flex min-h-svh flex-col`}>
+    <div
+      className={`${geist.variable} flex min-h-svh flex-col bg-neutral-800/70`}
+    >
       <Link
         href="/"
         className={buttonVariants({
@@ -32,6 +35,9 @@ export default function RootLayout({
       >
         Back to home
       </Link>
+      <div className="absolute inset-0 -z-10 flex items-center justify-center">
+        <Blobs />
+      </div>
       <Providers>
         {children}
         <Toaster />
