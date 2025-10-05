@@ -16,7 +16,7 @@ function FeatureItem({
 }: FeatureItemProps) {
   return (
     <div className="bg-card h-full rounded-lg border p-4 md:p-5">
-      <div className="mb-4 flex flex-col items-center justify-center gap-2 md:flex-row md:justify-start md:gap-x-3">
+      <div className="mb-4 flex gap-2 md:gap-x-3">
         <Icon className="size-6 text-amber-100 md:size-7" />
         <h3 className={cn("text-sm font-medium md:text-base", color)}>
           {title}

@@ -10,7 +10,7 @@ export const featuresList = [
     title: "Create amazing beats",
     color: "text-blue-200",
     description:
-      "Generate unique instrumentals in seconds, from hip-hop to EDM and explore endless creative possibilities.",
+      "Generate unique instrumentals in seconds and explore endless creative possibilities.",
     icon: AudioLines,
   },
   {
