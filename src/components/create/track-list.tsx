@@ -12,7 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "../ui/button";
 import { getPlayUrl } from "~/actions/generation";
 import { Badge } from "../ui/badge";
@@ -49,40 +49,51 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadingTrackId, setLoadingTrackId] = useState<string | null>(null);
   const [trackToRename, setTrackToRename] = useState<Track | null>(null);
+
   const router = useRouter();
   const setTrack = usePlayerStore((state) => state.setTrack);
 
-  const handleTrackSelect = async (track: Track) => {
-    if (loadingTrackId) return;
-    setLoadingTrackId(track.id);
-    const playUrl = await getPlayUrl(track.id);
-    setLoadingTrackId(null);
+  // Filtrado de tracks con useMemo para optimizar rendimiento
+  const filteredTracks = useMemo(() => {
+    return tracks.filter(
+      (track) =>
+        (track.title?.toLowerCase().includes(searchQuery.toLowerCase()) ??
+          false) ||
+        (track.prompt?.toLowerCase().includes(searchQuery.toLowerCase()) ??
+          false),
+    );
+  }, [tracks, searchQuery]);
 
-    setTrack({
-      id: track.id,
-      title: track.title,
-      url: playUrl,
-      artwork: track.thumbnailUrl,
-      prompt: track.prompt,
-      createdByUserName: track.createdByUserName,
-    });
+  // Selección de track: obtiene playUrl y actualiza el estado del reproductor
+  const handleTrackSelect = async (track: Track) => {
+    if (loadingTrackId) return; // evita múltiples clicks
+    setLoadingTrackId(track.id);
+    try {
+      const playUrl = await getPlayUrl(track.id);
+      setTrack({
+        id: track.id,
+        title: track.title ?? "Untitled track",
+        url: playUrl,
+        artwork: track.thumbnailUrl,
+        prompt: track.prompt,
+        createdByUserName: track.createdByUserName,
+      });
+    } finally {
+      setLoadingTrackId(null); // se asegura de limpiar el loading incluso si falla
+    }
   };
 
+  // Refresh de la lista de tracks
   const handleRefresh = async () => {
     setIsRefreshing(true);
     router.refresh();
     setTimeout(() => setIsRefreshing(false), 1000);
   };
 
-  const filteredTracks = tracks.filter(
-    (track) =>
-      track.title?.toLowerCase().includes(searchQuery.toLowerCase()) ??
-      track.prompt?.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
-
   return (
     <div className="flex flex-1 flex-col overflow-y-scroll">
       <div className="flex-1 p-6">
+        {/* Search + Refresh */}
         <div className="mb-4 flex items-center justify-between gap-4">
           <div className="relative max-w-md flex-1">
             <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
@@ -108,7 +119,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
           </Button>
         </div>
 
-        {/* Track list */}
+        {/* Lista de tracks */}
         <div className="space-y-2">
           {filteredTracks.length > 0 ? (
             filteredTracks.map((track) => {
@@ -210,15 +221,15 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                       {/* Track info */}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <h3 className="trucate text-sm font-medium">
-                            {track.title}
+                          <h3 className="truncate text-sm font-medium">
+                            {track.title ?? "Untitled track"}
                           </h3>
                           {track.instrumental && (
                             <Badge variant="outline">Instrumental</Badge>
                           )}
                         </div>
                         <p className="text-muted-foreground truncate text-xs">
-                          {track.prompt}
+                          {track.prompt ?? ""}
                         </p>
                       </div>
 
@@ -227,17 +238,23 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
                         <Button
                           onClick={async (e) => {
                             e.stopPropagation();
-                            await setPublishedStatus(
-                              track.id,
-                              !track.published,
-                            );
+                            try {
+                              await setPublishedStatus(
+                                track.id,
+                                !track.published,
+                              );
+                              router.refresh(); // actualiza UI después de cambiar estado
+                            } catch (error) {
+                              console.error(error);
+                            }
                           }}
                           variant="outline"
                           size="sm"
-                          className={`cursor-pointer ${track.published ? "border-red-200" : ""}`}
+                          className={track.published ? "border-red-200" : ""}
                         >
                           {track.published ? "Unpublish" : "Publish"}
                         </Button>
+
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -283,6 +300,7 @@ export function TrackList({ tracks }: { tracks: Track[] }) {
         </div>
       </div>
 
+      {/* Dialog para renombrar */}
       {trackToRename && (
         <RenameDialog
           track={trackToRename}
