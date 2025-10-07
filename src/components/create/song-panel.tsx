@@ -1,38 +1,70 @@
 "use client";
 
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { z } from "zod";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { Loader2, Music, Plus } from "lucide-react";
+import { Loader2, Music } from "lucide-react";
 import { Switch } from "../ui/switch";
-import { Badge } from "../ui/badge";
 import { toast } from "sonner";
 import { generateSong, type GenerateRequest } from "~/actions/generation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Separator } from "../ui/separator";
 
-const inspirationTags = [
-  "80s synth-pop",
-  "Acoustic ballad",
-  "Epic movie score",
-  "Lo-fi hip hop",
-  "Driving rock anthem",
-  "Summer beach vibe",
-];
-
+// 🎵 Tags predefinidos
 const styleTags = [
-  "Industrial rave",
-  "Heavy bass",
-  "Orchestral",
-  "Electronic beats",
-  "Funky guitar",
-  "Soulful vocals",
-  "Ambient pads",
+  "Deep Bass",
+  "Electronic Beats",
+  "Guitar Riffs",
+  "Vocal Harmonies",
+  "Synth Pads",
+  "Percussive Elements",
+  "Bright Pop Synths",
+  "Layered Vocals",
+  "Catchy Hooks",
+  "Danceable Rhythm",
+  "Power Chords",
+  "Double Bass Drums",
+  "Distorted Guitar",
 ];
+
+// ✅ Esquema Zod
+const songSchema = z
+  .object({
+    description: z.string().min(1, "Please describe your song."),
+    styleInput: z.string().min(1, "Please add at least one style."),
+    instrumental: z.boolean(),
+    addLyrics: z.boolean(),
+    lyrics: z.string().optional(),
+    lyricsMode: z.enum(["write", "auto"]),
+  })
+  .refine((data) => data.instrumental || data.addLyrics, {
+    message: "Please select a song type",
+  })
+  .refine(
+    (data) => !data.addLyrics || (data.lyrics && data.lyrics.trim().length > 0),
+    { message: "Please add or describe your lyrics." },
+  );
+
+function Step({
+  title,
+  children,
+}: {
+  title?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-4 flex flex-col gap-2">
+      {title && <span className="text-sm font-semibold">{title}</span>}
+      {children}
+    </div>
+  );
+}
 
 export function SongPanel() {
-  const [mode, setMode] = useState<"simple" | "custom">("simple");
   const [description, setDescription] = useState("");
-  const [instrumental, setInstrumental] = useState(false);
+  const [instrumental, setInstrumental] = useState(true);
+  const [addLyrics, setAddLyrics] = useState(false);
   const [lyricsMode, setLyricsMode] = useState<"write" | "auto">("write");
   const [lyrics, setLyrics] = useState("");
   const [styleInput, setStyleInput] = useState("");
@@ -42,74 +74,56 @@ export function SongPanel() {
     const currentTags = styleInput
       .split(", ")
       .map((s) => s.trim())
-      .filter((s) => s);
+      .filter(Boolean);
 
     if (!currentTags.includes(tag)) {
-      if (styleInput.trim() === "") {
-        setStyleInput(tag);
-      } else {
-        setStyleInput(styleInput + ", " + tag);
-      }
-    }
-  };
-
-  const handleInspirationTagClick = (tag: string) => {
-    const currentTags = description
-      .split(", ")
-      .map((s) => s.trim())
-      .filter((s) => s);
-
-    if (!currentTags.includes(tag)) {
-      if (description.trim() === "") {
-        setDescription(tag);
-      } else {
-        setDescription(description + ", " + tag);
-      }
+      setStyleInput(currentTags.concat(tag).join(", "));
     }
   };
 
   const handleCreate = async () => {
-    if (mode === "simple" && !description.trim()) {
-      toast.error("Please describe your song before creating.");
-      return;
-    }
-    if (mode === "custom" && !styleInput.trim()) {
-      toast.error("Please add some styles for your song.");
+    const validation = songSchema.safeParse({
+      description,
+      styleInput,
+      instrumental,
+      addLyrics,
+      lyrics,
+      lyricsMode,
+    });
+
+    // ✅ Tipado seguro
+    if (!validation.success) {
+      const message = validation.error.errors[0]?.message ?? "Invalid input.";
+      toast.error(message);
       return;
     }
 
-    // Generate song
-    let requestBody: GenerateRequest;
+    // ✅ Usamos const porque no se reasigna
+    const finalDescription = `${description} Style: ${styleInput}`;
+    let requestBody: GenerateRequest = {
+      fullDescribedSong: finalDescription,
+      instrumental,
+    };
 
-    if (mode === "simple") {
-      requestBody = {
-        fullDescribedSong: description,
-        instrumental,
-      };
-    } else {
-      const prompt = styleInput;
-      if (lyricsMode === "write") {
-        requestBody = {
-          prompt,
-          lyrics,
-          instrumental,
-        };
-      } else {
-        requestBody = {
-          prompt,
-          describedLyrics: lyrics,
-          instrumental,
-        };
-      }
+    if (addLyrics) {
+      requestBody =
+        lyricsMode === "write"
+          ? { ...requestBody, lyrics }
+          : { ...requestBody, describedLyrics: lyrics };
     }
 
     try {
       setLoading(true);
       await generateSong(requestBody);
+      toast.success("Song created successfully!");
+      // Reset de formulario
       setDescription("");
       setLyrics("");
       setStyleInput("");
-    } catch (error) {
+      setAddLyrics(false);
+      setInstrumental(false);
+      setLyricsMode("write");
+    } catch {
       toast.error("Failed to generate song");
     } finally {
       setLoading(false);
@@ -118,152 +132,132 @@ export function SongPanel() {
 
   return (
     <div className="bg-muted/30 flex w-full flex-col border-r lg:w-80">
-      <div className="flex-1 overflow-y-auto p-4">
-        <Tabs
-          value={mode}
-          onValueChange={(value) => setMode(value as "simple" | "custom")}
-        >
-          <TabsList className="w-full">
-            <TabsTrigger value="simple">Simple</TabsTrigger>
-            <TabsTrigger value="custom">Custom</TabsTrigger>
-          </TabsList>
+      <div className="flex-1 space-y-4 overflow-y-auto p-4">
+        {/* Describe song */}
+        <Step title="Song Description">
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="A dreamy lofi hip hop song, perfect for studying or relaxing"
+            className="min-h-[120px] resize-none text-sm"
+          />
+        </Step>
 
-          <TabsContent value="simple" className="mt-6 space-y-6">
-            <div className="flex flex-col gap-3">
-              <label className="text-sm font-medium">Describe your song</label>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="A dreamy lofi hip hop song, perfect for studying of relaxing"
-                className="min-h-[120px] resize-none"
+        <Separator />
+
+        {/* Song Type */}
+        <Step title="Song Type">
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={instrumental}
+                onCheckedChange={(checked) => {
+                  setInstrumental(checked);
+                  if (checked) setAddLyrics(false);
+                }}
               />
+              <span className="text-xs font-medium">Instrumental</span>
             </div>
-
-            {/* Lyrics button an instrumentals toggle */}
-            <div className="flex items-center justify-between">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setMode("custom")}
-              >
-                <Plus className="mr-2" />
-                Lyrics
-              </Button>
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">Instrumental</label>
-                <Switch
-                  checked={instrumental}
-                  onCheckedChange={setInstrumental}
-                />
-              </div>
+            <div className="h-5 w-px bg-gray-300" />
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={addLyrics}
+                onCheckedChange={(checked) => {
+                  setAddLyrics(checked);
+                  if (checked) setInstrumental(false);
+                }}
+              />
+              <span className="text-xs font-medium">With Lyrics</span>
             </div>
+          </div>
+        </Step>
 
-            <div className="flex flex-col gap-3">
-              <label className="text-sm font-medium">Inspiration</label>
-              <div className="w-full overflow-x-auto whitespace-nowrap">
-                <div className="flex gap-2 pb-2">
-                  {inspirationTags.map((tag) => (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 flex-shrink-0 bg-transparent text-xs"
-                      key={tag}
-                      onClick={() => handleInspirationTagClick(tag)}
-                    >
-                      <Plus className="mr-1" />
-                      {tag}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </TabsContent>
+        <Separator />
 
-          <TabsContent value="custom" className="mt-6 space-y-6">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">Lyrics</label>
-                <div className="flex items-center gap-1">
+        {/* Lyrics */}
+        <AnimatePresence>
+          {addLyrics && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Step title="Lyrics">
+                <div className="mb-2 flex items-center gap-2">
                   <Button
-                    variant={lyricsMode === "auto" ? "secondary" : "ghost"}
-                    onClick={() => {
-                      setLyricsMode("auto");
-                      setLyrics("");
-                    }}
+                    variant={lyricsMode === "write" ? "secondary" : "outline"}
                     size="sm"
-                    className="h-7 text-xs"
-                  >
-                    Auto
-                  </Button>
-                  <Button
-                    variant={lyricsMode === "write" ? "secondary" : "ghost"}
-                    onClick={() => {
-                      setLyricsMode("write");
-                      setLyrics("");
-                    }}
-                    size="sm"
-                    className="h-7 text-xs"
+                    className="text-xs"
+                    onClick={() => setLyricsMode("write")}
                   >
                     Write
                   </Button>
+                  <Button
+                    variant={lyricsMode === "auto" ? "secondary" : "outline"}
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => setLyricsMode("auto")}
+                  >
+                    Auto
+                  </Button>
                 </div>
-              </div>
-              <Textarea
-                placeholder={
-                  lyricsMode === "write"
-                    ? "Add your own lyrics here"
-                    : "Describe you lyrics, e.g., a sad song about lost love"
-                }
-                value={lyrics}
-                onChange={(e) => setLyrics(e.target.value)}
-                className="min-h-[100px] resize-none"
-              />
-            </div>
+                <Textarea
+                  value={lyrics}
+                  onChange={(e) => setLyrics(e.target.value)}
+                  placeholder={
+                    lyricsMode === "write"
+                      ? "Add your own lyrics here"
+                      : "Describe your lyrics, e.g., a sad song about lost love"
+                  }
+                  className="min-h-[100px] resize-none text-sm"
+                />
+              </Step>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">Instrumental</label>
-              <Switch
-                checked={instrumental}
-                onCheckedChange={setInstrumental}
-              />
-            </div>
+        <Separator />
 
-            {/* Styles */}
-            <div className="flex flex-col gap-3">
-              <label className="text-sm font-medium">Styles</label>
-              <Textarea
-                placeholder="Enter style tags"
-                value={styleInput}
-                onChange={(e) => setStyleInput(e.target.value)}
-                className="min-h-[60px] resize-none"
-              />
-              <div className="w-full overflow-x-auto whitespace-nowrap">
-                <div className="flex gap-2 pb-2">
-                  {styleTags.map((tag) => (
-                    <Badge
-                      variant="secondary"
-                      key={tag}
-                      className="hover:bg-secondary/50 flex-shrink-0 cursor-pointer text-xs"
-                      onClick={() => handleStyleInputTagClick(tag)}
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+        {/* Styles */}
+        <Step title="Song Style">
+          <Textarea
+            value={styleInput}
+            onChange={(e) => setStyleInput(e.target.value)}
+            placeholder="Enter your style or select a style tag"
+            className="min-h-[60px] resize-none text-sm"
+          />
+          <div className="mt-2 w-full overflow-x-auto whitespace-nowrap">
+            <div className="flex gap-2 pb-2">
+              {styleTags.map((tag) => (
+                <Button
+                  key={tag}
+                  size="sm"
+                  variant="outline"
+                  className="h-7 flex-shrink-0 text-xs"
+                  onClick={() => handleStyleInputTagClick(tag)}
+                >
+                  {tag}
+                </Button>
+              ))}
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </Step>
       </div>
 
+      {/* Submit button */}
       <div className="border-t p-4">
         <Button
           onClick={handleCreate}
           disabled={loading}
-          className="w-full cursor-pointer bg-emerald-400 font-semibold hover:bg-emerald-500"
+          className="w-full cursor-pointer bg-emerald-400 font-semibold hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? <Loader2 className="animate-spin" /> : <Music />}
-          {loading ? "Creating..." : "Create song"}
+          {loading ? (
+            <Loader2 className="mr-2 animate-spin" />
+          ) : (
+            <Music className="mr-2" />
+          )}
+          {loading ? "Creating..." : "Create Song"}
         </Button>
       </div>
     </div>
