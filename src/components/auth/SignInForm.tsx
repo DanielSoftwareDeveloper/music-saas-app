@@ -54,12 +54,12 @@ function SignInForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof SignInSchema>) {
+  async function onSubmit(values: z.infer<typeof SignInSchema>) {
     setError("");
     setPending(true);
 
-    {
-      authClient.signIn.email(
+    try {
+      await authClient.signIn.email(
         {
           email: values.email,
           password: values.password,
@@ -67,7 +67,7 @@ function SignInForm() {
         {
           onSuccess: () => {
             setPending(false);
-            toast.success(`Login successful!`);
+            toast.success("Login successful!");
             router.push(siteConfig.panelPath);
           },
           onError: (error) => {
@@ -76,6 +76,9 @@ function SignInForm() {
           },
         },
       );
+    } catch (err) {
+      setPending(false);
+      setError("Unexpected error. Please try again.");
     }
   }
 

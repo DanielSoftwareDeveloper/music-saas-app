@@ -40,13 +40,12 @@ function SignUpForm() {
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof SignUpSchema>) {
+  async function onSubmit(values: z.infer<typeof SignUpSchema>) {
     setError("");
     setPending(true);
 
-    {
-      authClient.signUp.email(
+    try {
+      await authClient.signUp.email(
         {
           name: "",
           email: values.email,
@@ -55,7 +54,7 @@ function SignUpForm() {
         {
           onSuccess: () => {
             setPending(false);
-            toast.success(`Verification email sent!`);
+            toast.success("Verification email sent!");
             router.push("/auth/verify-email");
           },
           onError: (error) => {
@@ -64,6 +63,9 @@ function SignUpForm() {
           },
         },
       );
+    } catch (err) {
+      setPending(false);
+      setError("Unexpected error. Please try again.");
     }
   }
 
