@@ -1,7 +1,6 @@
 import {
   BookOpen,
   ChevronDownIcon,
-  Home,
   LayoutDashboard,
   LogOutIcon,
 } from "lucide-react";

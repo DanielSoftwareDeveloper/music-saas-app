@@ -1,6 +1,5 @@
 "use server";
 
-import { UserButton } from "@daveyplate/better-auth-ui";
 import {
   Sidebar,
   SidebarContent,
@@ -12,8 +11,8 @@ import {
 } from "../ui/sidebar";
 import { Credits } from "./credits";
 import SidebarMenuItems from "./sidebar-menu-items";
-import { User } from "lucide-react";
 import Upgrade from "./upgrade";
+import UserButton from "./UserButton";
 
 export async function AppSidebar() {
   return (
@@ -37,14 +36,11 @@ export async function AppSidebar() {
           <Upgrade />
         </div>
         <UserButton
-          variant="outline"
-          additionalLinks={[
-            {
-              label: "Customer Portal",
-              href: "/overview/customer-portal",
-              icon: <User />,
-            },
-          ]}
+          user={{
+            name: "",
+            email: "",
+            avatar: "",
+          }}
         />
       </SidebarFooter>
     </Sidebar>

@@ -1,8 +1,9 @@
 import Logo from "../general/Logo";
 import MainWrapper from "../general/MainWrapper";
-import { siteConfig } from "~/config/site";
+
 import { Separator } from "~/components/ui/separator";
 import Link from "next/link";
+import { siteConfig } from "~/config/site-config";
 
 function Footer() {
   return (
@@ -63,7 +64,7 @@ function Footer() {
         </div>
         <div className="flex justify-center">
           <p className="text-muted-foreground text-sm">
-            <span>{siteConfig?.name}</span>
+            <span>{siteConfig?.title}</span>
             <span className="mx-2">|</span>
             <span>&copy; {new Date().getFullYear()} All Rights Reserved</span>
           </p>

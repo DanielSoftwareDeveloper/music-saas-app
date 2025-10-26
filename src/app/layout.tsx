@@ -4,10 +4,10 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import { ThemeProvider } from "~/components/theme/theme-provider";
-import { siteConfig } from "~/config/site";
+import { siteConfig } from "~/config/site-config";
 
 export const metadata: Metadata = {
-  title: siteConfig.name,
+  title: siteConfig.title,
   description: siteConfig.description,
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
